@@ -1340,6 +1340,56 @@
 					"name": "定时列表",
 					"item": [
 						{
+							"name": "获取定时器列表",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "eb6d9efe-4286-45c4-be17-38f2a25aca11",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"var data = pm.response.json();\r",
+											"tests[\"请求响应体里面的code为200\"] = data.code == 200;\r",
+											"tests[\"list为空\"] = data.model.list.length == 0;"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}/datahub/job/list?pageNum=1&pageSize=10&pids=0",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"datahub",
+										"job",
+										"list"
+									],
+									"query": [
+										{
+											"key": "pageNum",
+											"value": "1"
+										},
+										{
+											"key": "pageSize",
+											"value": "10"
+										},
+										{
+											"key": "pids",
+											"value": "0"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
 							"name": "获取定时器列表-无项目时",
 							"event": [
 								{
