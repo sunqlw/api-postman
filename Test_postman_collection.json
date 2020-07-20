@@ -1,0 +1,1464 @@
+{
+	"info": {
+		"_postman_id": "2e364efc-c3e1-4c6f-9f64-ecfb0fb871bd",
+		"name": "接口测试",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "datahub4.0.8",
+			"item": [
+				{
+					"name": "登录",
+					"item": [
+						{
+							"name": "登录",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "3b89158d-69a0-42ea-9e5d-8e27ad193bc9",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "un",
+											"value": "{{un}}",
+											"type": "text"
+										},
+										{
+											"key": "pw",
+											"value": "{{pw}}",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{leapid_domain}}/leapid-admin/api/v1/login",
+									"host": [
+										"{{leapid_domain}}"
+									],
+									"path": [
+										"leapid-admin",
+										"api",
+										"v1",
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "获取项目id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "e6e485ad-2a67-4444-b538-403e6999f0ea",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"var data2 = pm.response.json(); //获取响应体里面的json对象\r",
+											"var arr=[]; //创建一个空数组\r",
+											"\r",
+											"//遍历model中的元素，获取所有的key，即获取所有的项目值\r",
+											"for (var key in data2.model){ \r",
+											"    //获取到的项目值为string需要转成int，然后添加到数组中去\r",
+											"    arr.push(parseInt(key)); \r",
+											"}\r",
+											"// 把数组中的第一个元素设置为全局的pid，把整个数组设置为全局的pids_arr\r",
+											"pm.environment.set(\"pid\", arr[0]);\r",
+											"pm.environment.set(\"pids_arr\", arr);\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}/datahub/leapid/projects",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"datahub",
+										"leapid",
+										"projects"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "新建资源",
+					"item": [
+						{
+							"name": "添加mysql资源",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "4879ccd4-8ce6-4454-97fd-be1fecd01f8f",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"var data = pm.response.json();\r",
+											"tests[\"请求响应体里面的code为200\"] = data.code == 200;\r",
+											"tests[\"新建资源成功\"] = data.model.resName.search(\"mysql\") != -1;"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "5a2f4371-eefd-4485-9d0b-baaad1bab22b",
+										"exec": [
+											"var timestamp = Math.round(new Date().getTime())\r",
+											"pm.environment.set(\"timestamp\", timestamp);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "host",
+											"value": "172.17.202.145",
+											"type": "text"
+										},
+										{
+											"key": "url",
+											"value": "jdbc:mysql://172.17.202.145:3306",
+											"type": "text"
+										},
+										{
+											"key": "port",
+											"value": "3306",
+											"type": "text"
+										},
+										{
+											"key": "user",
+											"value": "datahub",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "datahub",
+											"type": "text"
+										},
+										{
+											"key": "otherParams",
+											"value": "{\"sid\":\"\"}",
+											"type": "text"
+										},
+										{
+											"key": "resName",
+											"value": "mysql_{{timestamp}}",
+											"type": "text"
+										},
+										{
+											"key": "pid",
+											"value": "{{pid}}",
+											"type": "text"
+										},
+										{
+											"key": "resType",
+											"value": "38",
+											"type": "text"
+										},
+										{
+											"key": "maxConnectionSize",
+											"value": "20",
+											"type": "text"
+										},
+										{
+											"key": "params",
+											"value": "[{\"name\":\"sid\",\"value\":\"\",\"extend\":false}]",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{domain}}/datahub/res/add",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"datahub",
+										"res",
+										"add"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "添加oracle资源",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "1315f492-a327-46ec-a4d0-ab183ea235d5",
+										"exec": [
+											"pm.environment.set(\"timestamp\", Math.round(new Date().getTime()));"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "dd7ec789-22d0-44f5-b9bb-c369eb308575",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"var data = pm.response.json();\r",
+											"tests[\"请求响应体里面的code为200\"] = data.code == 200;\r",
+											"tests[\"新建资源成功\"] = data.model.resName.search(\"oracle\") != -1;"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "otherParams",
+											"value": "{\"sid\":\"ora11\"}",
+											"type": "text"
+										},
+										{
+											"key": "host",
+											"value": "172.17.202.145",
+											"type": "text"
+										},
+										{
+											"key": "url",
+											"value": "jdbc:oracle:thin:@//172.17.202.145:1521",
+											"type": "text"
+										},
+										{
+											"key": "port",
+											"value": "1521",
+											"type": "text"
+										},
+										{
+											"key": "user",
+											"value": "lenovo",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "123456",
+											"type": "text"
+										},
+										{
+											"key": "resName",
+											"value": "oracle_{{timestamp}}",
+											"type": "text"
+										},
+										{
+											"key": "pid",
+											"value": "{{pid}}",
+											"type": "text"
+										},
+										{
+											"key": "resType",
+											"value": "4",
+											"type": "text"
+										},
+										{
+											"key": "maxConnectionSize",
+											"value": "20",
+											"type": "text"
+										},
+										{
+											"key": "params",
+											"value": "[{\"name\":\"sid\",\"value\":\"ora11\",\"extend\":false}]",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{domain}}/datahub/res/add",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"datahub",
+										"res",
+										"add"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "添加sqlserver资源",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "4d135b57-c85b-4787-8528-ff618abc6a79",
+										"exec": [
+											"pm.environment.set(\"timestamp\", Math.round(new Date().getTime()));"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "3c6a9d1b-8f31-4cb5-bd77-d0cdccf9b3d0",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"var data = pm.response.json();\r",
+											"tests[\"请求响应体里面的code为200\"] = data.code == 200;\r",
+											"tests[\"新建资源成功\"] = data.model.resName.search(\"sqlserver\") != -1;"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "otherParams",
+											"value": "{}",
+											"type": "text"
+										},
+										{
+											"key": "host",
+											"value": "172.17.202.239",
+											"type": "text"
+										},
+										{
+											"key": "url",
+											"value": "jdbc:sqlserver://172.17.202.239:1433",
+											"type": "text"
+										},
+										{
+											"key": "port",
+											"value": "1433",
+											"type": "text"
+										},
+										{
+											"key": "user",
+											"value": "sa",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "leap@123",
+											"type": "text"
+										},
+										{
+											"key": "resName",
+											"value": "sqlserver_{{timestamp}}",
+											"type": "text"
+										},
+										{
+											"key": "pid",
+											"value": "{{pid}}",
+											"type": "text"
+										},
+										{
+											"key": "resType",
+											"value": "15",
+											"type": "text"
+										},
+										{
+											"key": "maxConnectionSize",
+											"value": "20",
+											"type": "text"
+										},
+										{
+											"key": "params",
+											"value": "[]",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{domain}}/datahub/res/add",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"datahub",
+										"res",
+										"add"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "添加postgresql资源",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "b0323e89-1cc3-4bc9-b2a3-2ba3d5f2b113",
+										"exec": [
+											"pm.environment.set(\"timestamp\", Math.round(new Date().getTime()));"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "e7dd9538-8f2e-4676-b3f8-3a9680309e1d",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"var data = pm.response.json();\r",
+											"tests[\"请求响应体里面的code为200\"] = data.code == 200;\r",
+											"tests[\"新建资源成功\"] = data.model.resName.search(\"postgresql\") != -1;"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "otherParams",
+											"value": "{}",
+											"type": "text"
+										},
+										{
+											"key": "host",
+											"value": "172.17.202.145",
+											"type": "text"
+										},
+										{
+											"key": "url",
+											"value": "jdbc:postgresql://172.17.202.145:5432",
+											"type": "text"
+										},
+										{
+											"key": "port",
+											"value": "5432",
+											"type": "text"
+										},
+										{
+											"key": "user",
+											"value": "lenovo2",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "Lenovo@2017",
+											"type": "text"
+										},
+										{
+											"key": "resName",
+											"value": "postgresql_{{timestamp}}",
+											"type": "text"
+										},
+										{
+											"key": "pid",
+											"value": "{{pid}}",
+											"type": "text"
+										},
+										{
+											"key": "resType",
+											"value": "24",
+											"type": "text"
+										},
+										{
+											"key": "maxConnectionSize",
+											"value": "20",
+											"type": "text"
+										},
+										{
+											"key": "params",
+											"value": "[]",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{domain}}/datahub/res/add",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"datahub",
+										"res",
+										"add"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "添加db2资源",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "077e3ec2-77e6-4fe1-84fc-389c0813a4eb",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"var data = pm.response.json();\r",
+											"tests[\"请求响应体里面的code为200\"] = data.code == 200;\r",
+											"tests[\"新建资源成功\"] = data.model.resName.search(\"db2\") != -1;"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "9d4df01e-1e36-4799-9c18-4cb2a3ac6b13",
+										"exec": [
+											"pm.environment.set(\"timestamp\", Math.round(new Date().getTime()));"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "otherParams",
+											"value": "{\"sid\":\"lenovo\"}",
+											"type": "text"
+										},
+										{
+											"key": "host",
+											"value": "172.17.202.145",
+											"type": "text"
+										},
+										{
+											"key": "url",
+											"value": "jdbc:db2://172.17.202.145:50000",
+											"type": "text"
+										},
+										{
+											"key": "port",
+											"value": "50000",
+											"type": "text"
+										},
+										{
+											"key": "user",
+											"value": "dbtowuo",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "Lenovo@2017",
+											"type": "text"
+										},
+										{
+											"key": "resName",
+											"value": "db2_{{timestamp}}",
+											"type": "text"
+										},
+										{
+											"key": "pid",
+											"value": "{{pid}}",
+											"type": "text"
+										},
+										{
+											"key": "resType",
+											"value": "44",
+											"type": "text"
+										},
+										{
+											"key": "maxConnectionSize",
+											"value": "20",
+											"type": "text"
+										},
+										{
+											"key": "params",
+											"value": "[{\"name\":\"sid\",\"value\":\"lenovo\",\"extend\":false}]",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{domain}}/datahub/res/add",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"datahub",
+										"res",
+										"add"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "添加ftp资源",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "d7db234f-68a1-4f41-905d-0baa46fc7ea1",
+										"exec": [
+											"pm.environment.set(\"timestamp\", Math.round(new Date().getTime()));"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "5c87a3df-6e7d-4fc1-b71e-aa96b63e3384",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"var data = pm.response.json();\r",
+											"tests[\"请求响应体里面的code为200\"] = data.code == 200;\r",
+											"tests[\"新建资源成功\"] = data.model.resName.search(\"ftp\") != -1;"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "otherParams",
+											"value": "{\"protocol\":\"FTP\"}",
+											"type": "text"
+										},
+										{
+											"key": "host",
+											"value": "172.17.202.145",
+											"type": "text"
+										},
+										{
+											"key": "port",
+											"value": "21",
+											"type": "text"
+										},
+										{
+											"key": "user",
+											"value": "datahub",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "datahub",
+											"type": "text"
+										},
+										{
+											"key": "url",
+											"value": "ftp://172.17.202.145:21",
+											"type": "text"
+										},
+										{
+											"key": "resName",
+											"value": "ftp_{{timestamp}}",
+											"type": "text"
+										},
+										{
+											"key": "pid",
+											"value": "{{pid}}",
+											"type": "text"
+										},
+										{
+											"key": "resType",
+											"value": "64",
+											"type": "text"
+										},
+										{
+											"key": "maxConnectionSize",
+											"value": "20",
+											"type": "text"
+										},
+										{
+											"key": "params",
+											"value": "[{\"name\":\"protocol\",\"value\":\"FTP\",\"extend\":false}]",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{domain}}/datahub/res/add",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"datahub",
+										"res",
+										"add"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "新建sftp资源",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "d339ec09-f849-48ac-adb0-2070566bdb2f",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"var data = pm.response.json();\r",
+											"tests[\"请求响应体里面的code为200\"] = data.code == 200;\r",
+											"tests[\"新建资源成功\"] = data.model.resName.search(\"sftp\") != -1;"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "222efbc0-90b6-4d37-9a1a-2ee88d0e20ea",
+										"exec": [
+											"pm.environment.set(\"timestamp\", Math.round(new Date().getTime()));"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "host",
+											"value": "172.17.202.145",
+											"type": "text"
+										},
+										{
+											"key": "port",
+											"value": "22",
+											"type": "text"
+										},
+										{
+											"key": "user",
+											"value": "datahub",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "datahub",
+											"type": "text"
+										},
+										{
+											"key": "otherParams",
+											"value": "{\"protocol\":\"SFTP\"}",
+											"type": "text"
+										},
+										{
+											"key": "url",
+											"value": "ftp://172.17.202.145:22",
+											"type": "text"
+										},
+										{
+											"key": "resName",
+											"value": "sftp_{{timestamp}}",
+											"type": "text"
+										},
+										{
+											"key": "pid",
+											"value": "{{pid}}",
+											"type": "text"
+										},
+										{
+											"key": "resType",
+											"value": "64",
+											"type": "text"
+										},
+										{
+											"key": "maxConnectionSize",
+											"value": "20",
+											"type": "text"
+										},
+										{
+											"key": "params",
+											"value": "[{\"name\":\"protocol\",\"value\":\"SFTP\",\"extend\":false}]",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{domain}}/datahub/res/add",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"datahub",
+										"res",
+										"add"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "新建s3资源",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "69bac98e-0686-4922-ba08-1b8a1663e3bc",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"var data = pm.response.json();\r",
+											"tests[\"请求响应体里面的code为200\"] = data.code == 200;\r",
+											"tests[\"新建资源成功\"] = data.model.resName.search(\"s3\") != -1;"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "b030fc12-da66-4506-a717-7a426bd8516e",
+										"exec": [
+											"pm.environment.set(\"timestamp\", Math.round(new Date().getTime()));"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "otherParams",
+											"value": "{\"secretKey\":\"jK4m+JaNHft4HKCO7EqSl1lMAq5CkSwoDtoOrgAj\",\"region\":\"cn-north-1\",\"accessKey\":\"AKIAP4MOVNBFMWGNR4IA\"}",
+											"type": "text"
+										},
+										{
+											"key": "resName",
+											"value": "s3_{{timestamp}}",
+											"type": "text"
+										},
+										{
+											"key": "pid",
+											"value": "{{pid}}",
+											"type": "text"
+										},
+										{
+											"key": "resType",
+											"value": "66",
+											"type": "text"
+										},
+										{
+											"key": "maxConnectionSize",
+											"value": "20",
+											"type": "text"
+										},
+										{
+											"key": "params",
+											"value": "[{\"name\":\"secretKey\",\"value\":\"jK4m+JaNHft4HKCO7EqSl1lMAq5CkSwoDtoOrgAj\",\"extend\":false},{\"name\":\"region\",\"value\":\"cn-north-1\",\"extend\":false},{\"name\":\"accessKey\",\"value\":\"AKIAP4MOVNBFMWGNR4IA\",\"extend\":false}]",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{domain}}/datahub/res/add",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"datahub",
+										"res",
+										"add"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "资源列表",
+					"item": [
+						{
+							"name": "获取资源列表",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "1088d601-af77-4572-967c-d632b2e46cd1",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"var data = pm.response.json();\r",
+											"tests[\"请求响应体里面的code为200\"] = data.code == 200;\r",
+											"tests[\"list不为空\"] = data.model.list.length != 0;\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "7281906c-186c-4cbd-a045-a68323d5a1c4",
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": []
+								},
+								"url": {
+									"raw": "{{domain}}/datahub/res/list?pageNum=1&pageSize=10&pids={{pid}},0",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"datahub",
+										"res",
+										"list"
+									],
+									"query": [
+										{
+											"key": "pageNum",
+											"value": "1"
+										},
+										{
+											"key": "pageSize",
+											"value": "10"
+										},
+										{
+											"key": "pids",
+											"value": "{{pid}},0"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "获取资源列表",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"body": {
+											"mode": "urlencoded",
+											"urlencoded": []
+										},
+										"url": {
+											"raw": "http://demo202.test.com:8070/datahub/res/list?pageNum=1&pageSize=10&pids=46,48",
+											"protocol": "http",
+											"host": [
+												"demo202",
+												"test",
+												"com"
+											],
+											"port": "8070",
+											"path": [
+												"datahub",
+												"res",
+												"list"
+											],
+											"query": [
+												{
+													"key": "pageNum",
+													"value": "1"
+												},
+												{
+													"key": "pageSize",
+													"value": "10"
+												},
+												{
+													"key": "pids",
+													"value": "46,48"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json;charset=UTF-8"
+										},
+										{
+											"key": "Date",
+											"value": "Thu, 02 Jul 2020 05:58:14 GMT"
+										},
+										{
+											"key": "content-encoding",
+											"value": "gzip"
+										},
+										{
+											"key": "transfer-encoding",
+											"value": "chunked"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"code\": 200,\n    \"model\": {\n        \"pageNum\": 1,\n        \"pageStart\": 0,\n        \"pageSize\": 10,\n        \"sort\": \"id\",\n        \"order\": \"desc\",\n        \"total\": 13,\n        \"pages\": 0,\n        \"list\": [\n            {\n                \"id\": 10018,\n                \"createTime\": \"2020-07-01T09:45:24.000+0000\",\n                \"updateTime\": \"2020-07-01T09:45:23.000+0000\",\n                \"pid\": 48,\n                \"resName\": \"ftp-215\",\n                \"type\": {\n                    \"id\": 64,\n                    \"groupId\": 5,\n                    \"name\": \"FTP\",\n                    \"description\": \"FTP and SFTP\",\n                    \"support\": true\n                },\n                \"url\": \"ftp://172.17.171.215:22\",\n                \"user\": \"root\",\n                \"password\": \"hundsun\",\n                \"host\": \"172.17.171.215\",\n                \"port\": 22,\n                \"status\": 0,\n                \"maxConnectionSize\": 20,\n                \"params\": [\n                    {\n                        \"id\": 266,\n                        \"resId\": 10018,\n                        \"name\": \"protocol\",\n                        \"value\": \"SFTP\",\n                        \"extend\": false\n                    }\n                ]\n            },\n            {\n                \"id\": 10017,\n                \"createTime\": \"2020-07-01T06:13:19.000+0000\",\n                \"updateTime\": \"2020-07-01T06:13:18.000+0000\",\n                \"pid\": 46,\n                \"resName\": \"test_mysql\",\n                \"type\": {\n                    \"id\": 38,\n                    \"groupId\": 1,\n                    \"name\": \"MySQL\",\n                    \"driver\": \"com.mysql.jdbc.Driver\",\n                    \"defaultDb\": \"\",\n                    \"description\": \"MySQL\",\n                    \"support\": true\n                },\n                \"url\": \"jdbc:mysql://172.17.202.145:3306\",\n                \"user\": \"datahub\",\n                \"password\": \"datahub\",\n                \"host\": \"172.17.202.145\",\n                \"port\": 3306,\n                \"status\": 0,\n                \"maxConnectionSize\": 20,\n                \"params\": []\n            },\n            {\n                \"id\": 10016,\n                \"createTime\": \"2020-07-01T02:44:17.000+0000\",\n                \"updateTime\": \"2020-07-01T02:44:16.000+0000\",\n                \"pid\": 46,\n                \"resName\": \"mysql\",\n                \"type\": {\n                    \"id\": 24,\n                    \"groupId\": 1,\n                    \"name\": \"PostgreSQL\",\n                    \"driver\": \"org.postgresql.Driver\",\n                    \"defaultDb\": \"template1\",\n                    \"description\": \"PostgreSQL\",\n                    \"support\": true\n                },\n                \"url\": \"jdbc:postgresql://172.17.202.145:5432\",\n                \"user\": \"lenovo2\",\n                \"password\": \"Lenovo@2017\",\n                \"host\": \"172.17.202.145\",\n                \"port\": 5432,\n                \"status\": 0,\n                \"maxConnectionSize\": 20,\n                \"params\": []\n            },\n            {\n                \"id\": 10015,\n                \"createTime\": \"2020-06-30T10:10:01.000+0000\",\n                \"updateTime\": \"2020-06-30T10:10:01.000+0000\",\n                \"pid\": 48,\n                \"resName\": \"hive\",\n                \"type\": {\n                    \"id\": 31,\n                    \"groupId\": 4,\n                    \"name\": \"Hive\",\n                    \"driver\": \"org.apache.hive.jdbc.HiveDriver\",\n                    \"defaultDb\": \"default\",\n                    \"description\": \"Hadoop Hive\",\n                    \"support\": true\n                },\n                \"url\": \"jdbc:hive2://demo200.test.com:2181\",\n                \"user\": \"hive\",\n                \"password\": \"\",\n                \"host\": \"demo200.test.com\",\n                \"port\": 2181,\n                \"status\": 0,\n                \"maxConnectionSize\": 20,\n                \"params\": [\n                    {\n                        \"id\": 254,\n                        \"resId\": 10015,\n                        \"name\": \"serviceMode\",\n                        \"value\": \"1\",\n                        \"extend\": false\n                    },\n                    {\n                        \"id\": 255,\n                        \"resId\": 10015,\n                        \"name\": \"serviceDiscoveryMode\",\n                        \"value\": \"zooKeeper\",\n                        \"extend\": false\n                    },\n                    {\n                        \"id\": 252,\n                        \"resId\": 10015,\n                        \"name\": \"hid\",\n                        \"value\": \"10013\",\n                        \"extend\": false\n                    },\n                    {\n                        \"id\": 253,\n                        \"resId\": 10015,\n                        \"name\": \"zooKeeperNamespace\",\n                        \"value\": \"hiveserver2\",\n                        \"extend\": false\n                    }\n                ]\n            },\n            {\n                \"id\": 10014,\n                \"createTime\": \"2020-06-30T06:18:36.000+0000\",\n                \"updateTime\": \"2020-06-30T06:18:36.000+0000\",\n                \"pid\": 48,\n                \"resName\": \"11\",\n                \"type\": {\n                    \"id\": 51,\n                    \"groupId\": 4,\n                    \"name\": \"HDFS\",\n                    \"description\": \"Hadoop Distributed File System\",\n                    \"support\": true\n                },\n                \"url\": \"\",\n                \"user\": \"hdfs1\",\n                \"password\": \"\",\n                \"host\": \"\",\n                \"port\": -1,\n                \"status\": 0,\n                \"maxConnectionSize\": 20,\n                \"params\": [\n                    {\n                        \"id\": 250,\n                        \"resId\": 10014,\n                        \"name\": \"coreSiteXml\",\n                        \"value\": \"/tmp/datahub/48/10014/core-site.xml\",\n                        \"extend\": false\n                    },\n                    {\n                        \"id\": 251,\n                        \"resId\": 10014,\n                        \"name\": \"hdfsSiteXml\",\n                        \"value\": \"/tmp/datahub/48/10014/hdfs-site.xml\",\n                        \"extend\": false\n                    },\n                    {\n                        \"id\": 249,\n                        \"resId\": 10014,\n                        \"name\": \"authType\",\n                        \"value\": \"1\",\n                        \"extend\": false\n                    }\n                ]\n            },\n            {\n                \"id\": 10013,\n                \"createTime\": \"2020-06-22T07:03:08.000+0000\",\n                \"updateTime\": \"2020-06-22T07:03:08.000+0000\",\n                \"pid\": 48,\n                \"resName\": \"hdfs\",\n                \"type\": {\n                    \"id\": 51,\n                    \"groupId\": 4,\n                    \"name\": \"HDFS\",\n                    \"description\": \"Hadoop Distributed File System\",\n                    \"support\": true\n                },\n                \"url\": \"\",\n                \"user\": \"hdfs\",\n                \"password\": \"\",\n                \"host\": \"\",\n                \"port\": -1,\n                \"status\": 0,\n                \"maxConnectionSize\": 20,\n                \"params\": [\n                    {\n                        \"id\": 181,\n                        \"resId\": 10013,\n                        \"name\": \"hdfsSiteXml\",\n                        \"value\": \"/tmp/datahub/48/10013/hdfs-site.xml\",\n                        \"extend\": false\n                    },\n                    {\n                        \"id\": 179,\n                        \"resId\": 10013,\n                        \"name\": \"authType\",\n                        \"value\": \"1\",\n                        \"extend\": false\n                    },\n                    {\n                        \"id\": 180,\n                        \"resId\": 10013,\n                        \"name\": \"coreSiteXml\",\n                        \"value\": \"/tmp/datahub/48/10013/core-site.xml\",\n                        \"extend\": false\n                    }\n                ]\n            },\n            {\n                \"id\": 10012,\n                \"createTime\": \"2020-06-22T02:04:13.000+0000\",\n                \"updateTime\": \"2020-06-22T02:04:13.000+0000\",\n                \"pid\": 48,\n                \"resName\": \"S3\",\n                \"type\": {\n                    \"id\": 66,\n                    \"groupId\": 5,\n                    \"name\": \"AmazonS3\",\n                    \"description\": \"Amazon S3\",\n                    \"support\": true\n                },\n                \"url\": \"\",\n                \"user\": \"\",\n                \"password\": \"\",\n                \"host\": \"\",\n                \"port\": -1,\n                \"status\": 0,\n                \"maxConnectionSize\": 20,\n                \"params\": [\n                    {\n                        \"id\": 158,\n                        \"resId\": 10012,\n                        \"name\": \"secretKey\",\n                        \"value\": \"jK4m+JaNHft4HKCO7EqSl1lMAq5CkSwoDtoOrgAj\",\n                        \"extend\": false\n                    },\n                    {\n                        \"id\": 159,\n                        \"resId\": 10012,\n                        \"name\": \"region\",\n                        \"value\": \"cn-north-1\",\n                        \"extend\": false\n                    },\n                    {\n                        \"id\": 160,\n                        \"resId\": 10012,\n                        \"name\": \"accessKey\",\n                        \"value\": \"AKIAP4MOVNBFMWGNR4IA\",\n                        \"extend\": false\n                    }\n                ]\n            },\n            {\n                \"id\": 10011,\n                \"createTime\": \"2020-06-19T14:55:44.000+0000\",\n                \"updateTime\": \"2020-06-19T14:55:44.000+0000\",\n                \"pid\": 48,\n                \"resName\": \"mysql-200本身\",\n                \"type\": {\n                    \"id\": 38,\n                    \"groupId\": 1,\n                    \"name\": \"MySQL\",\n                    \"driver\": \"com.mysql.jdbc.Driver\",\n                    \"defaultDb\": \"\",\n                    \"description\": \"MySQL\",\n                    \"support\": true\n                },\n                \"url\": \"jdbc:mysql://demo200.test.com:3306\",\n                \"user\": \"root\",\n                \"password\": \"bigdata\",\n                \"host\": \"demo200.test.com\",\n                \"port\": 3306,\n                \"status\": 0,\n                \"maxConnectionSize\": 20,\n                \"params\": [\n                    {\n                        \"id\": 227,\n                        \"resId\": 10011,\n                        \"name\": \"characterEncoding\",\n                        \"value\": \"UTF8\",\n                        \"meaning\": \"字符集\",\n                        \"extend\": true\n                    },\n                    {\n                        \"id\": 228,\n                        \"resId\": 10011,\n                        \"name\": \"allowMultiQueries\",\n                        \"value\": \"true\",\n                        \"meaning\": \"允许多查询\",\n                        \"extend\": true\n                    },\n                    {\n                        \"id\": 248,\n                        \"resId\": 10011,\n                        \"name\": \"a\",\n                        \"value\": \"a\",\n                        \"meaning\": \"Custom Parameter\",\n                        \"extend\": true\n                    }\n                ]\n            },\n            {\n                \"id\": 10010,\n                \"createTime\": \"2020-06-19T01:30:27.000+0000\",\n                \"updateTime\": \"2020-06-19T01:30:26.000+0000\",\n                \"pid\": 48,\n                \"resName\": \"oracle\",\n                \"type\": {\n                    \"id\": 4,\n                    \"groupId\": 1,\n                    \"name\": \"Oracle\",\n                    \"driver\": \"oracle.jdbc.driver.OracleDriver\",\n                    \"defaultDb\": \"\",\n                    \"description\": \"Oracle\",\n                    \"support\": true\n                },\n                \"url\": \"jdbc:oracle:thin:@//172.17.202.145:1521\",\n                \"user\": \"lenovo\",\n                \"password\": \"123456\",\n                \"host\": \"172.17.202.145\",\n                \"port\": 1521,\n                \"status\": 0,\n                \"maxConnectionSize\": 20,\n                \"params\": [\n                    {\n                        \"id\": 157,\n                        \"resId\": 10010,\n                        \"name\": \"sid\",\n                        \"value\": \"ora11\",\n                        \"extend\": false\n                    }\n                ]\n            },\n            {\n                \"id\": 10009,\n                \"createTime\": \"2020-06-12T07:39:42.000+0000\",\n                \"updateTime\": \"2020-06-12T07:39:42.000+0000\",\n                \"pid\": 48,\n                \"resName\": \"db2\",\n                \"type\": {\n                    \"id\": 44,\n                    \"groupId\": 1,\n                    \"name\": \"DB2\",\n                    \"driver\": \"com.ibm.db2.jcc.DB2Driver\",\n                    \"defaultDb\": \"\",\n                    \"description\": \"IBM DB2\",\n                    \"support\": true\n                },\n                \"url\": \"jdbc:db2://172.17.202.145:50000\",\n                \"user\": \"dbtowuo\",\n                \"password\": \"Lenovo@2017\",\n                \"host\": \"172.17.202.145\",\n                \"port\": 50000,\n                \"status\": 0,\n                \"maxConnectionSize\": 20,\n                \"params\": [\n                    {\n                        \"id\": 20,\n                        \"resId\": 10009,\n                        \"name\": \"sid\",\n                        \"value\": \"lenovo\",\n                        \"extend\": false\n                    }\n                ]\n            }\n        ],\n        \"prePage\": 0,\n        \"nextPage\": 0,\n        \"condition\": {\n            \"type\": {},\n            \"url\": \"\",\n            \"user\": \"\",\n            \"password\": \"\",\n            \"host\": \"\",\n            \"port\": -1,\n            \"status\": 0\n        },\n        \"pids\": [\n            46,\n            48\n        ],\n        \"firstPage\": false,\n        \"lastPage\": false\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "获取资源列表-无项目时",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "b0cb8fa5-85ef-46cb-a8ba-d8f150969097",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"var data = pm.response.json();\r",
+											"// pm.test(\"list为空\", function () {\r",
+											"//     pm.expect(data.model.list.length == 0).to.be.true;\r",
+											"// });\r",
+											"tests[\"请求响应体里面的code为200\"] = data.code == 200;\r",
+											"tests[\"list为空\"] = data.model.list.length == 0;\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "aa9f0c52-d630-423c-839a-4f61bd2c4449",
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": []
+								},
+								"url": {
+									"raw": "{{domain}}/datahub/res/list?pageNum=1&pageSize=10&pids=0",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"datahub",
+										"res",
+										"list"
+									],
+									"query": [
+										{
+											"key": "pageNum",
+											"value": "1"
+										},
+										{
+											"key": "pageSize",
+											"value": "10"
+										},
+										{
+											"key": "pids",
+											"value": "0"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "获取资源列表",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"body": {
+											"mode": "urlencoded",
+											"urlencoded": []
+										},
+										"url": {
+											"raw": "http://demo202.test.com:8070/datahub/res/list?pageNum=1&pageSize=10&pids=46,48",
+											"protocol": "http",
+											"host": [
+												"demo202",
+												"test",
+												"com"
+											],
+											"port": "8070",
+											"path": [
+												"datahub",
+												"res",
+												"list"
+											],
+											"query": [
+												{
+													"key": "pageNum",
+													"value": "1"
+												},
+												{
+													"key": "pageSize",
+													"value": "10"
+												},
+												{
+													"key": "pids",
+													"value": "46,48"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json;charset=UTF-8"
+										},
+										{
+											"key": "Date",
+											"value": "Thu, 02 Jul 2020 05:58:14 GMT"
+										},
+										{
+											"key": "content-encoding",
+											"value": "gzip"
+										},
+										{
+											"key": "transfer-encoding",
+											"value": "chunked"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"code\": 200,\n    \"model\": {\n        \"pageNum\": 1,\n        \"pageStart\": 0,\n        \"pageSize\": 10,\n        \"sort\": \"id\",\n        \"order\": \"desc\",\n        \"total\": 13,\n        \"pages\": 0,\n        \"list\": [\n            {\n                \"id\": 10018,\n                \"createTime\": \"2020-07-01T09:45:24.000+0000\",\n                \"updateTime\": \"2020-07-01T09:45:23.000+0000\",\n                \"pid\": 48,\n                \"resName\": \"ftp-215\",\n                \"type\": {\n                    \"id\": 64,\n                    \"groupId\": 5,\n                    \"name\": \"FTP\",\n                    \"description\": \"FTP and SFTP\",\n                    \"support\": true\n                },\n                \"url\": \"ftp://172.17.171.215:22\",\n                \"user\": \"root\",\n                \"password\": \"hundsun\",\n                \"host\": \"172.17.171.215\",\n                \"port\": 22,\n                \"status\": 0,\n                \"maxConnectionSize\": 20,\n                \"params\": [\n                    {\n                        \"id\": 266,\n                        \"resId\": 10018,\n                        \"name\": \"protocol\",\n                        \"value\": \"SFTP\",\n                        \"extend\": false\n                    }\n                ]\n            },\n            {\n                \"id\": 10017,\n                \"createTime\": \"2020-07-01T06:13:19.000+0000\",\n                \"updateTime\": \"2020-07-01T06:13:18.000+0000\",\n                \"pid\": 46,\n                \"resName\": \"test_mysql\",\n                \"type\": {\n                    \"id\": 38,\n                    \"groupId\": 1,\n                    \"name\": \"MySQL\",\n                    \"driver\": \"com.mysql.jdbc.Driver\",\n                    \"defaultDb\": \"\",\n                    \"description\": \"MySQL\",\n                    \"support\": true\n                },\n                \"url\": \"jdbc:mysql://172.17.202.145:3306\",\n                \"user\": \"datahub\",\n                \"password\": \"datahub\",\n                \"host\": \"172.17.202.145\",\n                \"port\": 3306,\n                \"status\": 0,\n                \"maxConnectionSize\": 20,\n                \"params\": []\n            },\n            {\n                \"id\": 10016,\n                \"createTime\": \"2020-07-01T02:44:17.000+0000\",\n                \"updateTime\": \"2020-07-01T02:44:16.000+0000\",\n                \"pid\": 46,\n                \"resName\": \"mysql\",\n                \"type\": {\n                    \"id\": 24,\n                    \"groupId\": 1,\n                    \"name\": \"PostgreSQL\",\n                    \"driver\": \"org.postgresql.Driver\",\n                    \"defaultDb\": \"template1\",\n                    \"description\": \"PostgreSQL\",\n                    \"support\": true\n                },\n                \"url\": \"jdbc:postgresql://172.17.202.145:5432\",\n                \"user\": \"lenovo2\",\n                \"password\": \"Lenovo@2017\",\n                \"host\": \"172.17.202.145\",\n                \"port\": 5432,\n                \"status\": 0,\n                \"maxConnectionSize\": 20,\n                \"params\": []\n            },\n            {\n                \"id\": 10015,\n                \"createTime\": \"2020-06-30T10:10:01.000+0000\",\n                \"updateTime\": \"2020-06-30T10:10:01.000+0000\",\n                \"pid\": 48,\n                \"resName\": \"hive\",\n                \"type\": {\n                    \"id\": 31,\n                    \"groupId\": 4,\n                    \"name\": \"Hive\",\n                    \"driver\": \"org.apache.hive.jdbc.HiveDriver\",\n                    \"defaultDb\": \"default\",\n                    \"description\": \"Hadoop Hive\",\n                    \"support\": true\n                },\n                \"url\": \"jdbc:hive2://demo200.test.com:2181\",\n                \"user\": \"hive\",\n                \"password\": \"\",\n                \"host\": \"demo200.test.com\",\n                \"port\": 2181,\n                \"status\": 0,\n                \"maxConnectionSize\": 20,\n                \"params\": [\n                    {\n                        \"id\": 254,\n                        \"resId\": 10015,\n                        \"name\": \"serviceMode\",\n                        \"value\": \"1\",\n                        \"extend\": false\n                    },\n                    {\n                        \"id\": 255,\n                        \"resId\": 10015,\n                        \"name\": \"serviceDiscoveryMode\",\n                        \"value\": \"zooKeeper\",\n                        \"extend\": false\n                    },\n                    {\n                        \"id\": 252,\n                        \"resId\": 10015,\n                        \"name\": \"hid\",\n                        \"value\": \"10013\",\n                        \"extend\": false\n                    },\n                    {\n                        \"id\": 253,\n                        \"resId\": 10015,\n                        \"name\": \"zooKeeperNamespace\",\n                        \"value\": \"hiveserver2\",\n                        \"extend\": false\n                    }\n                ]\n            },\n            {\n                \"id\": 10014,\n                \"createTime\": \"2020-06-30T06:18:36.000+0000\",\n                \"updateTime\": \"2020-06-30T06:18:36.000+0000\",\n                \"pid\": 48,\n                \"resName\": \"11\",\n                \"type\": {\n                    \"id\": 51,\n                    \"groupId\": 4,\n                    \"name\": \"HDFS\",\n                    \"description\": \"Hadoop Distributed File System\",\n                    \"support\": true\n                },\n                \"url\": \"\",\n                \"user\": \"hdfs1\",\n                \"password\": \"\",\n                \"host\": \"\",\n                \"port\": -1,\n                \"status\": 0,\n                \"maxConnectionSize\": 20,\n                \"params\": [\n                    {\n                        \"id\": 250,\n                        \"resId\": 10014,\n                        \"name\": \"coreSiteXml\",\n                        \"value\": \"/tmp/datahub/48/10014/core-site.xml\",\n                        \"extend\": false\n                    },\n                    {\n                        \"id\": 251,\n                        \"resId\": 10014,\n                        \"name\": \"hdfsSiteXml\",\n                        \"value\": \"/tmp/datahub/48/10014/hdfs-site.xml\",\n                        \"extend\": false\n                    },\n                    {\n                        \"id\": 249,\n                        \"resId\": 10014,\n                        \"name\": \"authType\",\n                        \"value\": \"1\",\n                        \"extend\": false\n                    }\n                ]\n            },\n            {\n                \"id\": 10013,\n                \"createTime\": \"2020-06-22T07:03:08.000+0000\",\n                \"updateTime\": \"2020-06-22T07:03:08.000+0000\",\n                \"pid\": 48,\n                \"resName\": \"hdfs\",\n                \"type\": {\n                    \"id\": 51,\n                    \"groupId\": 4,\n                    \"name\": \"HDFS\",\n                    \"description\": \"Hadoop Distributed File System\",\n                    \"support\": true\n                },\n                \"url\": \"\",\n                \"user\": \"hdfs\",\n                \"password\": \"\",\n                \"host\": \"\",\n                \"port\": -1,\n                \"status\": 0,\n                \"maxConnectionSize\": 20,\n                \"params\": [\n                    {\n                        \"id\": 181,\n                        \"resId\": 10013,\n                        \"name\": \"hdfsSiteXml\",\n                        \"value\": \"/tmp/datahub/48/10013/hdfs-site.xml\",\n                        \"extend\": false\n                    },\n                    {\n                        \"id\": 179,\n                        \"resId\": 10013,\n                        \"name\": \"authType\",\n                        \"value\": \"1\",\n                        \"extend\": false\n                    },\n                    {\n                        \"id\": 180,\n                        \"resId\": 10013,\n                        \"name\": \"coreSiteXml\",\n                        \"value\": \"/tmp/datahub/48/10013/core-site.xml\",\n                        \"extend\": false\n                    }\n                ]\n            },\n            {\n                \"id\": 10012,\n                \"createTime\": \"2020-06-22T02:04:13.000+0000\",\n                \"updateTime\": \"2020-06-22T02:04:13.000+0000\",\n                \"pid\": 48,\n                \"resName\": \"S3\",\n                \"type\": {\n                    \"id\": 66,\n                    \"groupId\": 5,\n                    \"name\": \"AmazonS3\",\n                    \"description\": \"Amazon S3\",\n                    \"support\": true\n                },\n                \"url\": \"\",\n                \"user\": \"\",\n                \"password\": \"\",\n                \"host\": \"\",\n                \"port\": -1,\n                \"status\": 0,\n                \"maxConnectionSize\": 20,\n                \"params\": [\n                    {\n                        \"id\": 158,\n                        \"resId\": 10012,\n                        \"name\": \"secretKey\",\n                        \"value\": \"jK4m+JaNHft4HKCO7EqSl1lMAq5CkSwoDtoOrgAj\",\n                        \"extend\": false\n                    },\n                    {\n                        \"id\": 159,\n                        \"resId\": 10012,\n                        \"name\": \"region\",\n                        \"value\": \"cn-north-1\",\n                        \"extend\": false\n                    },\n                    {\n                        \"id\": 160,\n                        \"resId\": 10012,\n                        \"name\": \"accessKey\",\n                        \"value\": \"AKIAP4MOVNBFMWGNR4IA\",\n                        \"extend\": false\n                    }\n                ]\n            },\n            {\n                \"id\": 10011,\n                \"createTime\": \"2020-06-19T14:55:44.000+0000\",\n                \"updateTime\": \"2020-06-19T14:55:44.000+0000\",\n                \"pid\": 48,\n                \"resName\": \"mysql-200本身\",\n                \"type\": {\n                    \"id\": 38,\n                    \"groupId\": 1,\n                    \"name\": \"MySQL\",\n                    \"driver\": \"com.mysql.jdbc.Driver\",\n                    \"defaultDb\": \"\",\n                    \"description\": \"MySQL\",\n                    \"support\": true\n                },\n                \"url\": \"jdbc:mysql://demo200.test.com:3306\",\n                \"user\": \"root\",\n                \"password\": \"bigdata\",\n                \"host\": \"demo200.test.com\",\n                \"port\": 3306,\n                \"status\": 0,\n                \"maxConnectionSize\": 20,\n                \"params\": [\n                    {\n                        \"id\": 227,\n                        \"resId\": 10011,\n                        \"name\": \"characterEncoding\",\n                        \"value\": \"UTF8\",\n                        \"meaning\": \"字符集\",\n                        \"extend\": true\n                    },\n                    {\n                        \"id\": 228,\n                        \"resId\": 10011,\n                        \"name\": \"allowMultiQueries\",\n                        \"value\": \"true\",\n                        \"meaning\": \"允许多查询\",\n                        \"extend\": true\n                    },\n                    {\n                        \"id\": 248,\n                        \"resId\": 10011,\n                        \"name\": \"a\",\n                        \"value\": \"a\",\n                        \"meaning\": \"Custom Parameter\",\n                        \"extend\": true\n                    }\n                ]\n            },\n            {\n                \"id\": 10010,\n                \"createTime\": \"2020-06-19T01:30:27.000+0000\",\n                \"updateTime\": \"2020-06-19T01:30:26.000+0000\",\n                \"pid\": 48,\n                \"resName\": \"oracle\",\n                \"type\": {\n                    \"id\": 4,\n                    \"groupId\": 1,\n                    \"name\": \"Oracle\",\n                    \"driver\": \"oracle.jdbc.driver.OracleDriver\",\n                    \"defaultDb\": \"\",\n                    \"description\": \"Oracle\",\n                    \"support\": true\n                },\n                \"url\": \"jdbc:oracle:thin:@//172.17.202.145:1521\",\n                \"user\": \"lenovo\",\n                \"password\": \"123456\",\n                \"host\": \"172.17.202.145\",\n                \"port\": 1521,\n                \"status\": 0,\n                \"maxConnectionSize\": 20,\n                \"params\": [\n                    {\n                        \"id\": 157,\n                        \"resId\": 10010,\n                        \"name\": \"sid\",\n                        \"value\": \"ora11\",\n                        \"extend\": false\n                    }\n                ]\n            },\n            {\n                \"id\": 10009,\n                \"createTime\": \"2020-06-12T07:39:42.000+0000\",\n                \"updateTime\": \"2020-06-12T07:39:42.000+0000\",\n                \"pid\": 48,\n                \"resName\": \"db2\",\n                \"type\": {\n                    \"id\": 44,\n                    \"groupId\": 1,\n                    \"name\": \"DB2\",\n                    \"driver\": \"com.ibm.db2.jcc.DB2Driver\",\n                    \"defaultDb\": \"\",\n                    \"description\": \"IBM DB2\",\n                    \"support\": true\n                },\n                \"url\": \"jdbc:db2://172.17.202.145:50000\",\n                \"user\": \"dbtowuo\",\n                \"password\": \"Lenovo@2017\",\n                \"host\": \"172.17.202.145\",\n                \"port\": 50000,\n                \"status\": 0,\n                \"maxConnectionSize\": 20,\n                \"params\": [\n                    {\n                        \"id\": 20,\n                        \"resId\": 10009,\n                        \"name\": \"sid\",\n                        \"value\": \"lenovo\",\n                        \"extend\": false\n                    }\n                ]\n            }\n        ],\n        \"prePage\": 0,\n        \"nextPage\": 0,\n        \"condition\": {\n            \"type\": {},\n            \"url\": \"\",\n            \"user\": \"\",\n            \"password\": \"\",\n            \"host\": \"\",\n            \"port\": -1,\n            \"status\": 0\n        },\n        \"pids\": [\n            46,\n            48\n        ],\n        \"firstPage\": false,\n        \"lastPage\": false\n    }\n}"
+								}
+							]
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "任务列表",
+					"item": [
+						{
+							"name": "获取任务列表",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "276d63fe-5e7a-401b-9350-5cf629b95498",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"var data = pm.response.json();\r",
+											"tests[\"请求响应体里面的code为200\"] = data.code == 200;\r",
+											"tests[\"list不为空\"] = data.model.list.length != 0;"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}/datahub/job/list?pageNum=1&pageSize=10&pids={{pid}},0",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"datahub",
+										"job",
+										"list"
+									],
+									"query": [
+										{
+											"key": "pageNum",
+											"value": "1"
+										},
+										{
+											"key": "pageSize",
+											"value": "10"
+										},
+										{
+											"key": "pids",
+											"value": "{{pid}},0"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "获取任务列表-无项目时",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "1d49d1e7-b8e9-43c9-8874-19043ca7510a",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"var data = pm.response.json();\r",
+											"tests[\"请求响应体里面的code为200\"] = data.code == 200;\r",
+											"tests[\"list为空\"] = data.model.list.length == 0;"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}/datahub/job/list?pageNum=1&pageSize=10&pids=0",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"datahub",
+										"job",
+										"list"
+									],
+									"query": [
+										{
+											"key": "pageNum",
+											"value": "1"
+										},
+										{
+											"key": "pageSize",
+											"value": "10"
+										},
+										{
+											"key": "pids",
+											"value": "0"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "新建定时器",
+					"item": [],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "定时列表",
+					"item": [
+						{
+							"name": "获取定时器列表-无项目时",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "46d3a1d4-a2a1-44ec-af8b-01c5d0ed583a",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"var data = pm.response.json();\r",
+											"tests[\"请求响应体里面的code为200\"] = data.code == 200;\r",
+											"tests[\"list为空\"] = data.model.list.length == 0;"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}/datahub/job/list?pageNum=1&pageSize=10&pids=0",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"datahub",
+										"job",
+										"list"
+									],
+									"query": [
+										{
+											"key": "pageNum",
+											"value": "1"
+										},
+										{
+											"key": "pageSize",
+											"value": "10"
+										},
+										{
+											"key": "pids",
+											"value": "0"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "运行记录",
+					"item": [
+						{
+							"name": "获取任务运行记录列表",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "3df1bc64-ca27-4635-abea-ff2fb21b9b72",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"var data = pm.response.json();\r",
+											"tests[\"请求响应体里面的code为200\"] = data.code == 200;\r",
+											"tests[\"list不为空\"] = data.model.list.length != 0;"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "pageNum",
+											"value": "1",
+											"type": "text"
+										},
+										{
+											"key": "pageSize",
+											"value": "10",
+											"type": "text"
+										},
+										{
+											"key": "pids",
+											"value": "{{pid}},0",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{domain}}/datahub/jobRecord/list",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"datahub",
+										"jobRecord",
+										"list"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
